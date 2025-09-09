@@ -1,4 +1,4 @@
-impl crate::Sdk {
+impl crate::UserSdk {
     /// # Sdk::authorize
     ///
     /// check if user has specified permission
@@ -11,11 +11,13 @@ impl crate::Sdk {
     /// + when the HTTP request cannot be sent to the API (AuthorizeParams::HTTP)
     /// + when the url of the request cannot be created (AuthorizeParams::Url)
     ///
-    pub async fn authorize(&self, params: AuthorizeParams) -> Result<bool, AuthorizeError> {
+    pub async fn authorize(&self, params: crate::params::UserSdkAuthorizeParams) -> Result<bool, crate::errors::UserSdkAuthorizeError> {
+        use crate::errors::UserSdkAuthorizeError as Error;
+
         let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
             .parse(format!("user/permissions/{}", params.permission).as_str())
-            .map_err(|error| AuthorizeError::Url(error.to_string()))?;
+            .map_err(|error| Error::Url(error.to_string()))?;
         
         let client = reqwest::Client::new();
         let response = client
@@ -31,19 +33,3 @@ impl crate::Sdk {
         }
     }
 }
-
-#[derive(serde::Serialize)]
-pub struct AuthorizeParams {
-    pub token: String,
-    pub permission: String
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum AuthorizeError {
-    #[error(transparent)]
-    HTTP(#[from] reqwest::Error),
-    
-    #[error("{0}")]
-    Url(String),
-}
-

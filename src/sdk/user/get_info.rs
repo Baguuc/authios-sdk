@@ -1,4 +1,4 @@
-impl crate::Sdk {
+impl crate::UserSdk {
     /// # Sdk::get_info
     ///
     /// get info about a user by token
@@ -11,11 +11,13 @@ impl crate::Sdk {
     /// + when the url of the request cannot be created (InfoError::Url)
     /// + when provided token is invalid (InfoError::Unauthorized)
     ///
-    pub async fn get_info(&self, params: InfoParams) -> Result<authios_domain::User, InfoError> {
+    pub async fn get_info(&self, params: crate::params::UserSdkGetInfoParams) -> Result<crate::models::User, crate::errors::UserSdkGetInfoError> {
+        use crate::errors::UserSdkGetInfoError as Error;
+
         let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
             .parse("user")
-            .map_err(|error| InfoError::Url(error.to_string()))?;
+            .map_err(|error| Error::Url(error.to_string()))?;
 
         let client = reqwest::Client::new();
         let response = client
@@ -25,30 +27,13 @@ impl crate::Sdk {
             .await?;
 
         if response.status() != 200 {
-            return Err(InfoError::Unauthorized)
+            return Err(Error::Unauthorized)
         }
 
-        let user: authios_domain::User = response
+        let user: crate::models::User = response
             .json()
             .await?;
         
         return Ok(user);
     }
-}
-
-#[derive(serde::Serialize)]
-pub struct InfoParams {
-    pub token: String
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum InfoError {
-    #[error(transparent)]
-    HTTP(#[from] reqwest::Error),
-    
-    #[error("{0}")]
-    Url(String),
-
-    #[error("Unauthorized")]
-    Unauthorized
 }

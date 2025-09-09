@@ -1,4 +1,4 @@
-impl crate::Sdk {
+impl crate::UserSdk {
     /// # Sdk::login
     ///
     /// log in as a user and get the session token
@@ -12,11 +12,13 @@ impl crate::Sdk {
     /// + when the url of the request cannot be created (LoginError::Url)
     /// + when the login and password doesn't match (LoginError::Unauthorized)
     /// 
-    pub async fn login(&self, params: LoginParams) -> Result<String, LoginError> {
+    pub async fn login(&self, params: crate::params::UserSdkLoginParams) -> Result<String, crate::errors::UserSdkLoginError> {
+        use crate::errors::UserSdkLoginError as Error;
+
         let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
             .parse("user")
-            .map_err(|error| LoginError::Url(error.to_string()))?;
+            .map_err(|error| Error::Url(error.to_string()))?;
 
         let client = reqwest::Client::new();
         let response = client
@@ -26,7 +28,7 @@ impl crate::Sdk {
             .await?;
 
         if response.status() != 200 {
-            return Err(LoginError::Unauthorized)
+            return Err(Error::Unauthorized)
         }
 
         let token = response
@@ -35,22 +37,4 @@ impl crate::Sdk {
         
         return Ok(token);
     }
-}
-
-#[derive(serde::Serialize)]
-pub struct LoginParams {
-    pub login: String,
-    pub pwd: String
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum LoginError {
-    #[error(transparent)]
-    HTTP(#[from] reqwest::Error),
-    
-    #[error("{0}")]
-    Url(String),
-
-    #[error("Unauthorized")]
-    Unauthorized
 }

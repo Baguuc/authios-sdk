@@ -1,4 +1,4 @@
-impl crate::Sdk {
+impl crate::UserSdk {
     /// # Sdk::update_pwd
     ///
     /// update user password
@@ -12,14 +12,16 @@ impl crate::Sdk {
     /// + when the url of the request cannot be created (UpdatePwdError::Url)
     /// + when provided token is invalid (UpdatePwdError::Unauthorized) 
     ///
-    pub async fn update_pwd(&self, params: UpdatePwdParams) -> Result<(), UpdatePwdError> {
+    pub async fn update_pwd(&self, params: crate::params::UserSdkUpdatePwdParams) -> Result<(), crate::errors::UserSdkUpdatePwdError> {
+        use crate::errors::UserSdkUpdatePwdError as Error;
+
         let result = reqwest::Url::options()
             .base_url(Some(&self.base_url))
             .parse("user/pwd");
 
         let url = match result {
             Ok(url) => url,
-            Err(error) => return Err(UpdatePwdError::UrlParse(error.to_string()))
+            Err(error) => return Err(Error::UrlParse(error.to_string()))
         };
 
         let client = reqwest::Client::new();
@@ -31,27 +33,9 @@ impl crate::Sdk {
             .await?;
 
         if response.status() != 200 {
-            return Err(UpdatePwdError::Unauthorized)
+            return Err(Error::Unauthorized)
         }
         
         return Ok(());
     }
-}
-
-#[derive(serde::Serialize)]
-pub struct UpdatePwdParams {
-    pub token: String,
-    pub pwd: String
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum UpdatePwdError {
-    #[error(transparent)]
-    Reqwest(#[from] reqwest::Error),
-    
-    #[error("{0}")]
-    UrlParse(String),
-
-    #[error("Unauthorized")]
-    Unauthorized
 }
