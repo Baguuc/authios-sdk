@@ -7,3 +7,8 @@ pub use user_sdk::{
     UserSdkGrantGroupParams,
     UserSdkRevokeGroupParams
 };
+
+pub mod permission_sdk;
+pub use permission_sdk::{
+    PermissionSdkCreateParams
+};

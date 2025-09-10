@@ -1,21 +1,19 @@
-impl crate::UserSdk {
-    /// # Sdk::login
-    ///
-    /// log in as a user and get the session token
-    /// 
-    pub async fn login(&self, params: crate::params::UserSdkLoginParams) -> Result<String, crate::errors::UserSdkLoginError> {
-        use crate::errors::UserSdkLoginError as Error;
+impl crate::PermissionSdk {
+    pub async fn create(&self, params: crate::params::PermissionSdkCreateParams) -> Result<String, crate::errors::PermissionSdkCreateError> {
+        use serde_json::json; 
+        use crate::errors::PermissionSdkCreateError as Error;
 
         let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
-            .parse("user")
+            .parse("permissions")
             // won't error
             .unwrap();
 
         let client = reqwest::Client::new();
         let response = client
             .post(url)
-            .json(&params)
+            .header("authorization", params.token)
+            .json(&json!({ "name": params.permission_name }))
             .send()
             .await
             .map_err(|_| Error::ServerUnavaible)?;
@@ -31,9 +29,9 @@ impl crate::UserSdk {
 
         return match (status_code, text.as_str()) {
             (200, token) => Ok(token.to_string()),
-            (409, "USER_NOT_FOUND") => Err(Error::UserNotFound),
-            (401, "WRONG_PASSWORD") => Err(Error::WrongPassword),
-            (500, "CANNOT_GENERATE_TOKEN") => Err(Error::CannotGenerateToken),
+            (403, "UNAUTHORIZED") => Err(Error::Unauthorized),
+            (409, "ALREADY_EXIST") => Err(Error::AlreadyExist),
+            (409, "ROOT_GROUP_NOT_FOUND") => Err(Error::RootGroupNotFound),
             (500, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
             
             _ => panic!("Invalid status and body combination, cannot parse the response")
