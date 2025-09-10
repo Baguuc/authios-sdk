@@ -17,19 +17,33 @@ impl crate::UserSdk {
         let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
             .parse(format!("user/permissions/{}", params.permission).as_str())
-            .map_err(|error| Error::Url(error.to_string()))?;
+            // won't error 
+            .unwrap();
         
         let client = reqwest::Client::new();
         let response = client
             .get(url)
             .header("Authorization", params.token)
             .send()
-            .await?;
+            .await
+            .map_err(|_| Error::ServerUnavaible)?;
         
         if response.status() == 200 {
             return Ok(true);
-        } else {
-            return Ok(false);
         }
+
+        if let Ok(text) = response.text().await {
+            return match text.as_str() {
+                "UNAUTHORIZED" => Ok(false),
+                "INVALID_TOKEN" => Err(Error::InvalidToken),
+                "PERMISSION_NOT_FOUND" => Err(Error::PermissionNotFound),
+                "DATABASE_CONNECTION" => Err(Error::DatabaseConnection),
+                // content cannot be different 
+                _ => panic!("Wrong error details")
+            }
+        }
+        
+        // content has to be present 
+        panic!("No error details in the response")
     }
 }

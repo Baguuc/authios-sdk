@@ -1,11 +1,14 @@
 #[derive(thiserror::Error, Debug)]
 pub enum UserSdkLoginError {
-    #[error(transparent)]
-    HTTP(#[from] reqwest::Error),
-    
-    #[error("{0}")]
-    Url(String),
+    #[error("SERVER_UNAVAIBLE")]
+    ServerUnavaible,
+    #[error("USER_NOT_FOUND")]
+    UserNotFound,
+    #[error("WRONG_PASSWORD")]
+    WrongPassword,
+    #[error("CANNOT_GENERATE_TOKEN")]
+    CannotGenerateToken,
+    #[error("DATABASE_CONNECTION")]
+    DatabaseConnection
 
-    #[error("Unauthorized")]
-    Unauthorized
 }

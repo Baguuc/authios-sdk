@@ -3,38 +3,42 @@ impl crate::UserSdk {
     ///
     /// log in as a user and get the session token
     /// 
-    /// Params:
-    /// + login - login of user to log in as
-    /// + pwd - password to authenticate the user
-    /// 
-    /// Errors:
-    /// + when the HTTP request cannot be sent to the API (LoginError::HTTP)
-    /// + when the url of the request cannot be created (LoginError::Url)
-    /// + when the login and password doesn't match (LoginError::Unauthorized)
-    /// 
     pub async fn login(&self, params: crate::params::UserSdkLoginParams) -> Result<String, crate::errors::UserSdkLoginError> {
         use crate::errors::UserSdkLoginError as Error;
 
         let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
             .parse("user")
-            .map_err(|error| Error::Url(error.to_string()))?;
+            // won't error
+            .unwrap();
 
         let client = reqwest::Client::new();
         let response = client
             .post(url)
             .json(&params)
             .send()
-            .await?;
+            .await
+            .map_err(|_| Error::ServerUnavaible)?;
 
-        if response.status() != 200 {
-            return Err(Error::Unauthorized)
+        if response.status() == 200 {
+            match response.text().await {
+                Ok(token) => return Ok(token),
+                Err(_) => panic!("Token has to be present in the response")
+            };
         }
 
-        let token = response
-            .text()
-            .await?;
+        if let Ok(text) = response.text().await {
+            return match text.as_str() {
+                "USER_NOT_FOUND" => Err(Error::UserNotFound),
+                "WRONG_PASSWORD" => Err(Error::WrongPassword),
+                "CANNOT_GENERATE_TOKEN" => Err(Error::WrongPassword),
+                "DATABASE_CONNECTION" => Err(Error::DatabaseConnection),
+                // content cannot be different 
+                _ => panic!("Wrong error details")
+            }
+        }
         
-        return Ok(token);
+        // content has to be present 
+        panic!("No error details in the response")
     }
 }

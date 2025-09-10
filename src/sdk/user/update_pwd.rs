@@ -3,26 +3,14 @@ impl crate::UserSdk {
     ///
     /// update user password
     ///
-    /// Params:
-    /// + token - session token retrieved from login, used to authorize the operation
-    /// + pwd - new password to set
-    ///
-    /// Errors:
-    /// + when the HTTP request cannot be sent to the API (UpdatePwdError::HTTP)
-    /// + when the url of the request cannot be created (UpdatePwdError::Url)
-    /// + when provided token is invalid (UpdatePwdError::Unauthorized) 
-    ///
     pub async fn update_pwd(&self, params: crate::params::UserSdkUpdatePwdParams) -> Result<(), crate::errors::UserSdkUpdatePwdError> {
         use crate::errors::UserSdkUpdatePwdError as Error;
 
-        let result = reqwest::Url::options()
+        let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
-            .parse("user/pwd");
-
-        let url = match result {
-            Ok(url) => url,
-            Err(error) => return Err(Error::UrlParse(error.to_string()))
-        };
+            .parse("user/pwd")
+            // won't error
+            .unwrap();
 
         let client = reqwest::Client::new();
         let response = client
@@ -30,12 +18,24 @@ impl crate::UserSdk {
             .json(&params)
             .header("Authorization", params.token)
             .send()
-            .await?;
+            .await
+            .map_err(|_| Error::ServerUnavaible)?;
+        
+        if response.status() == 200 {
+            return Ok(());
+        }
 
-        if response.status() != 200 {
-            return Err(Error::Unauthorized)
+        if let Ok(text) = response.text().await {
+            return match text.as_str() {
+                "INVALID_TOKEN" => Err(Error::InvalidToken),
+                "CANNOT_HASH_PASSWORD" => Err(Error::CannotHash),
+                "DATABASE_CONNECTION" => Err(Error::DatabaseConnection),
+                // content cannot be different 
+                _ => panic!("Wrong error details")
+            }
         }
         
-        return Ok(());
+        // content has to be present 
+        panic!("No error details in the response")
     }
 }
