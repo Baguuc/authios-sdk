@@ -18,3 +18,8 @@ pub use permission_sdk::{
     PermissionSdkCreateError,
     PermissionSdkDeleteError
 };
+
+pub mod group_sdk;
+pub use group_sdk::{
+    GroupSdkNewError
+};

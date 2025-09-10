@@ -4,6 +4,9 @@ pub use user::UserSdk;
 pub mod permission;
 pub use permission::PermissionSdk;
 
+pub mod group;
+pub use group::GroupSdk;
+
 #[derive(Clone)]
 pub struct Sdk {
     base_url: reqwest::Url
@@ -21,7 +24,15 @@ impl Sdk {
         return Ok(Self { base_url });
     }
 
+    pub fn permission(self) -> PermissionSdk {
+        return PermissionSdk::new(self.base_url).unwrap();
+    }
+    
+    pub fn group(self) -> GroupSdk {
+        return GroupSdk::new(self.base_url).unwrap();
+    }
+    
     pub fn user(self) -> UserSdk {
         return UserSdk::new(self.base_url).unwrap();
-    }
+    }   
 }
