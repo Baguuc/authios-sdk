@@ -2,6 +2,7 @@ pub mod login;
 pub mod get_info;
 pub mod authorize;
 pub mod update_pwd;
+pub mod grant_group;
 
 pub struct UserSdk {
     base_url: reqwest::Url

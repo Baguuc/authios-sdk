@@ -9,3 +9,6 @@ pub use login::LoginParams as UserSdkLoginParams;
 
 pub mod update_pwd;
 pub use update_pwd::UpdatePwdParams as UserSdkUpdatePwdParams;
+
+pub mod grant_group;
+pub use grant_group::GrantGroupParams as UserSdkGrantGroupParams;

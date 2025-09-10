@@ -12,3 +12,6 @@ pub use login::UserSdkLoginError;
 
 pub mod update_pwd;
 pub use update_pwd::UserSdkUpdatePwdError;
+
+pub mod grant_group;
+pub use grant_group::UserSdkGrantGroupError;
