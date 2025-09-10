@@ -1,4 +1,5 @@
 pub mod create;
+pub mod delete;
 
 pub struct PermissionSdk {
     base_url: reqwest::Url

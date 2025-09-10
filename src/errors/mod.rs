@@ -15,5 +15,6 @@ pub use user_sdk::{
 pub mod permission_sdk;
 pub use permission_sdk::{
     PermissionSdkNewError,
-    PermissionSdkCreateError
+    PermissionSdkCreateError,
+    PermissionSdkDeleteError
 };

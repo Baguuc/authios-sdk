@@ -10,5 +10,6 @@ pub use user_sdk::{
 
 pub mod permission_sdk;
 pub use permission_sdk::{
-    PermissionSdkCreateParams
+    PermissionSdkCreateParams,
+    PermissionSdkDeleteParams
 };
