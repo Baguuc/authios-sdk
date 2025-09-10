@@ -24,5 +24,6 @@ pub use group_sdk::{
     GroupSdkNewError,
     GroupSdkCreateError,
     GroupSdkDeleteError,
-    GroupSdkGrantPermissionError
+    GroupSdkGrantPermissionError,
+    GroupSdkRevokePermissionError
 };
