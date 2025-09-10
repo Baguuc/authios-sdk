@@ -23,5 +23,6 @@ pub mod group_sdk;
 pub use group_sdk::{
     GroupSdkNewError,
     GroupSdkCreateError,
-    GroupSdkDeleteError
+    GroupSdkDeleteError,
+    GroupSdkGrantPermissionError
 };
