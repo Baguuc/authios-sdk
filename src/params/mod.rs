@@ -3,6 +3,7 @@ pub use user_sdk::{
     UserSdkAuthorizeParams,
     UserSdkGetInfoParams,
     UserSdkLoginParams,
+    UserSdkRegisterParams,
     UserSdkUpdatePwdParams,
     UserSdkGrantGroupParams,
     UserSdkRevokeGroupParams

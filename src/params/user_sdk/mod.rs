@@ -7,6 +7,9 @@ pub use get_info::GetInfoParams as UserSdkGetInfoParams;
 pub mod login;
 pub use login::LoginParams as UserSdkLoginParams;
 
+pub mod register;
+pub use register::RegisterParams as UserSdkRegisterParams;
+
 pub mod update_pwd;
 pub use update_pwd::UpdatePwdParams as UserSdkUpdatePwdParams;
 

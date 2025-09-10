@@ -10,6 +10,9 @@ pub use get_info::UserSdkGetInfoError;
 pub mod login;
 pub use login::UserSdkLoginError;
 
+pub mod register;
+pub use register::UserSdkRegisterError;
+
 pub mod update_pwd;
 pub use update_pwd::UserSdkUpdatePwdError;
 

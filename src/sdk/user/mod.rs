@@ -1,4 +1,5 @@
 pub mod login;
+pub mod register;
 pub mod get_info;
 pub mod authorize;
 pub mod update_pwd;
