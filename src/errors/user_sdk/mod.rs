@@ -1,5 +1,5 @@
-pub mod create;
-pub use create::UserSdkCreateError;
+pub mod new;
+pub use new::UserSdkNewError;
 
 pub mod authorize;
 pub use authorize::UserSdkAuthorizeError;

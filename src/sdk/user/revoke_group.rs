@@ -12,7 +12,7 @@ impl crate::UserSdk {
         
         let client = reqwest::Client::new();
         let response = client
-            .get(url)
+            .delete(url)
             .header("Authorization", params.token)
             .send()
             .await

@@ -10,8 +10,8 @@ pub struct UserSdk {
 }
 
 impl UserSdk {
-    pub fn new(base_url: reqwest::Url) -> Result<Self, crate::errors::UserSdkCreateError> {
-        use crate::errors::UserSdkCreateError as Error;
+    pub fn new(base_url: reqwest::Url) -> Result<Self, crate::errors::UserSdkNewError> {
+        use crate::errors::UserSdkNewError as Error;
         
         let base_url = match reqwest::Url::parse(base_url.as_str()) {
             Ok(url) => url,

@@ -1,5 +1,5 @@
 #[derive(thiserror::Error, Debug)]
-pub enum SdkCreateError {
+pub enum SdkNewError {
     #[error("INVALID_URL:{0}")]
     InvalidUrl(String)
 }

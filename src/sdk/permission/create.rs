@@ -1,19 +1,21 @@
 impl crate::UserSdk {
-    /// # Sdk::grant_group
+    /// # Sdk::login
     ///
-    pub async fn grant_group(&self, params: crate::params::UserSdkGrantGroupParams) -> Result<(), crate::errors::UserSdkGrantGroupError> {
-        use crate::errors::UserSdkGrantGroupError as Error;
+    /// log in as a user and get the session token
+    /// 
+    pub async fn login(&self, params: crate::params::UserSdkLoginParams) -> Result<String, crate::errors::UserSdkLoginError> {
+        use crate::errors::UserSdkLoginError as Error;
 
         let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
-            .parse(format!("users/{}/groups/{}", params.user_login, params.group_name).as_str())
-            // won't error 
+            .parse("user")
+            // won't error
             .unwrap();
-        
+
         let client = reqwest::Client::new();
         let response = client
             .post(url)
-            .header("Authorization", params.token)
+            .json(&params)
             .send()
             .await
             .map_err(|_| Error::ServerUnavaible)?;
@@ -28,12 +30,11 @@ impl crate::UserSdk {
             .unwrap_or(String::new());
 
         return match (status_code, text.as_str()) {
-            (200, _) => Ok(()),
+            (200, token) => Ok(token.to_string()),
             (409, "USER_NOT_FOUND") => Err(Error::UserNotFound),
-            (409, "GROUP_NOT_FOUND") => Err(Error::GroupNotFound),
-            (409, "ALREADY_ADDED") => Err(Error::AlreadyAdded),
-            (401, "UNAUTHORIZED") => Err(Error::Unauthorized),
-            (409, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
+            (401, "WRONG_PASSWORD") => Err(Error::WrongPassword),
+            (500, "CANNOT_GENERATE_TOKEN") => Err(Error::CannotGenerateToken),
+            (500, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
             
             _ => panic!("Invalid status and body combination, cannot parse the response")
         };
