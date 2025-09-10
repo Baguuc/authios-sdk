@@ -16,5 +16,6 @@ pub use permission_sdk::{
 
 pub mod group_sdk;
 pub use group_sdk::{
-    GroupSdkCreateParams
+    GroupSdkCreateParams,
+    GroupSdkDeleteParams
 };

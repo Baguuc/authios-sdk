@@ -1,4 +1,5 @@
 pub mod create;
+pub mod delete;
 
 pub struct GroupSdk {
     base_url: reqwest::Url
