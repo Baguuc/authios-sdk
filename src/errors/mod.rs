@@ -9,4 +9,5 @@ pub use user_sdk::{
     UserSdkLoginError,
     UserSdkUpdatePwdError,
     UserSdkGrantGroupError,
+    UserSdkRevokeGroupError,
 };

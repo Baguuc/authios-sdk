@@ -4,5 +4,6 @@ pub use user_sdk::{
     UserSdkGetInfoParams,
     UserSdkLoginParams,
     UserSdkUpdatePwdParams,
-    UserSdkGrantGroupParams
+    UserSdkGrantGroupParams,
+    UserSdkRevokeGroupParams
 };

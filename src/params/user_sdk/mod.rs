@@ -12,3 +12,6 @@ pub use update_pwd::UpdatePwdParams as UserSdkUpdatePwdParams;
 
 pub mod grant_group;
 pub use grant_group::GrantGroupParams as UserSdkGrantGroupParams;
+
+pub mod revoke_group;
+pub use revoke_group::RevokeGroupParams as UserSdkRevokeGroupParams;

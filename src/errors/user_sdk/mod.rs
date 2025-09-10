@@ -15,3 +15,6 @@ pub use update_pwd::UserSdkUpdatePwdError;
 
 pub mod grant_group;
 pub use grant_group::UserSdkGrantGroupError;
+
+pub mod revoke_group;
+pub use revoke_group::UserSdkRevokeGroupError;
