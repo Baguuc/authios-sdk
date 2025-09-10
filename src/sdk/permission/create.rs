@@ -1,5 +1,5 @@
 impl crate::PermissionSdk {
-    pub async fn create(&self, params: crate::params::PermissionSdkCreateParams) -> Result<String, crate::errors::PermissionSdkCreateError> {
+    pub async fn create(&self, params: crate::params::PermissionSdkCreateParams) -> Result<(), crate::errors::PermissionSdkCreateError> {
         use serde_json::json; 
         use crate::errors::PermissionSdkCreateError as Error;
 
@@ -28,7 +28,7 @@ impl crate::PermissionSdk {
             .unwrap_or(String::new());
 
         return match (status_code, text.as_str()) {
-            (200, token) => Ok(token.to_string()),
+            (200, _) => Ok(()),
             (403, "UNAUTHORIZED") => Err(Error::Unauthorized),
             (409, "ALREADY_EXIST") => Err(Error::AlreadyExist),
             (409, "ROOT_GROUP_NOT_FOUND") => Err(Error::RootGroupNotFound),

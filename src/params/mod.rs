@@ -13,3 +13,8 @@ pub use permission_sdk::{
     PermissionSdkCreateParams,
     PermissionSdkDeleteParams
 };
+
+pub mod group_sdk;
+pub use group_sdk::{
+    GroupSdkCreateParams
+};

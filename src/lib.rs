@@ -6,5 +6,6 @@ pub mod params;
 pub use sdk::{
     Sdk as AuthiosSdk,
     PermissionSdk,
+    GroupSdk,
     UserSdk,
 };
