@@ -28,22 +28,23 @@ impl crate::UserSdk {
             .await
             .map_err(|_| Error::ServerUnavaible)?;
         
-        if response.status() == 200 {
-            return Ok(true);
-        }
-
-        if let Ok(text) = response.text().await {
-            return match text.as_str() {
-                "UNAUTHORIZED" => Ok(false),
-                "INVALID_TOKEN" => Err(Error::InvalidToken),
-                "PERMISSION_NOT_FOUND" => Err(Error::PermissionNotFound),
-                "DATABASE_CONNECTION" => Err(Error::DatabaseConnection),
-                // content cannot be different 
-                _ => panic!("Wrong error details")
-            }
-        }
+        let status_code = response
+            .status()
+            .as_u16();
         
-        // content has to be present 
-        panic!("No error details in the response")
+        let text = response
+            .text()
+            .await
+            .unwrap_or(String::new());
+
+        return match (status_code, text.as_str()) {
+            (200, _) => Ok(true),
+            (401, "") => Ok(false),
+            (401, "INVALID_TOKEN") => Err(Error::InvalidToken),
+            (409, "PERMISSION_NOT_FOUND") => Err(Error::PermissionNotFound),
+            (500, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
+            
+            _ => panic!("Invalid status and body combination, cannot parse the response")
+        };
     }
 }

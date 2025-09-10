@@ -19,26 +19,24 @@ impl crate::UserSdk {
             .send()
             .await
             .map_err(|_| Error::ServerUnavaible)?;
-
-        if response.status() == 200 {
-            match response.text().await {
-                Ok(token) => return Ok(token),
-                Err(_) => panic!("Token has to be present in the response")
-            };
-        }
-
-        if let Ok(text) = response.text().await {
-            return match text.as_str() {
-                "USER_NOT_FOUND" => Err(Error::UserNotFound),
-                "WRONG_PASSWORD" => Err(Error::WrongPassword),
-                "CANNOT_GENERATE_TOKEN" => Err(Error::WrongPassword),
-                "DATABASE_CONNECTION" => Err(Error::DatabaseConnection),
-                // content cannot be different 
-                _ => panic!("Wrong error details")
-            }
-        }
         
-        // content has to be present 
-        panic!("No error details in the response")
+        let status_code = response
+            .status()
+            .as_u16();
+        
+        let text = response
+            .text()
+            .await
+            .unwrap_or(String::new());
+
+        return match (status_code, text.as_str()) {
+            (200, token) => Ok(token.to_string()),
+            (409, "USER_NOT_FOUND") => Err(Error::UserNotFound),
+            (401, "WRONG_PASSWORD") => Err(Error::WrongPassword),
+            (500, "CANNOT_GENERATE_TOKEN") => Err(Error::CannotGenerateToken),
+            (500, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
+            
+            _ => panic!("Invalid status and body combination, cannot parse the response")
+        };
     }
 }
