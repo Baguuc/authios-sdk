@@ -6,7 +6,7 @@ impl crate::UserSdk {
 
         let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
-            .parse("user")
+            .parse("users/me")
             // won't error
             .unwrap();
 

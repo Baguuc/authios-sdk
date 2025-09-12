@@ -16,7 +16,7 @@ impl crate::UserSdk {
 
         let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
-            .parse(format!("user/permissions/{}", params.permission).as_str())
+            .parse(format!("users/me/permissions/{}", params.permission).as_str())
             // won't error 
             .unwrap();
         
