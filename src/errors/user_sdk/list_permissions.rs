@@ -1,11 +1,7 @@
 #[derive(thiserror::Error, Debug)]
-pub enum GroupSdkCreateError {
+pub enum UserSdkListPermissionsError {
     #[error("SERVER_UNAVAIBLE")]
     ServerUnavaible,
-    #[error("ALREADY_EXIST")]
-    AlreadyExist,
-    #[error("UNAUTHORIZED")]
-    Unauthorized,
     #[error("INVALID_TOKEN")]
     InvalidToken,
     #[error("DATABASE_CONNECTION")]

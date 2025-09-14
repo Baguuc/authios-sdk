@@ -28,12 +28,13 @@ impl crate::UserSdk {
             .unwrap_or(String::new());
 
         return match (status_code, text.as_str()) {
-            (200, _) => Ok(()),
-            (409, "USER_NOT_FOUND") => Err(Error::UserNotFound),
-            (409, "GROUP_NOT_FOUND") => Err(Error::GroupNotFound),
-            (409, "NOT_ADDED_YET") => Err(Error::NotAddedYet),
+            (204, _) => Ok(()),
             (401, "UNAUTHORIZED") => Err(Error::Unauthorized),
-            (409, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
+            (401, "InvalidToken") => Err(Error::InvalidToken),
+            (404, "USER_NOT_FOUND") => Err(Error::UserNotFound),
+            (404, "GROUP_NOT_FOUND") => Err(Error::GroupNotFound),
+            (409, "NOT_ADDED_YET") => Err(Error::NotAddedYet),
+            (503, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
             
             _ => panic!("Invalid status and body combination, cannot parse the response")
         };

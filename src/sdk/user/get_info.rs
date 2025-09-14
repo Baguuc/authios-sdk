@@ -32,7 +32,7 @@ impl crate::UserSdk {
         return match (status_code, text.as_str()) {
             (200, text) => Ok(serde_json::from_str(text).unwrap()),
             (401, "INVALID_TOKEN") => Err(Error::InvalidToken),
-            (500, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
+            (503, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
             
             _ => panic!("Invalid status and body combination, cannot parse the reponse")
         };

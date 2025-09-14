@@ -31,10 +31,10 @@ impl crate::UserSdk {
             .unwrap_or(String::new());
 
         return match (status_code, text.as_str()) {
-            (200, _) => Ok(()),
+            (204, _) => Ok(()),
             (401, "INVALID_TOKEN") => Err(Error::InvalidToken),
-            (500, "CANNOT_HASH_PWD") => Err(Error::CannotHash),
-            (500, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
+            (503, "CANNOT_HASH_PWD") => Err(Error::CannotHash),
+            (503, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
             
             _ => panic!("Invalid status and body combination, cannot parse the response")
         };

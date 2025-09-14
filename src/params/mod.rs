@@ -2,6 +2,7 @@ pub mod user_sdk;
 pub use user_sdk::{
     UserSdkAuthorizeParams,
     UserSdkGetInfoParams,
+    UserSdkListPermissionsParams,
     UserSdkLoginParams,
     UserSdkRegisterParams,
     UserSdkUpdatePwdParams,

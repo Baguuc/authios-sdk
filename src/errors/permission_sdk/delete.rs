@@ -6,6 +6,8 @@ pub enum PermissionSdkDeleteError {
     NotFound,
     #[error("UNAUTHORIZED")]
     Unauthorized,
+    #[error("INVALID_TOKEN")]
+    InvalidToken,
     #[error("DATABASE_CONNECTION")]
     DatabaseConnection
 }

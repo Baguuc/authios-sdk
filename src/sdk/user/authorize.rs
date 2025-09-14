@@ -39,10 +39,10 @@ impl crate::UserSdk {
 
         return match (status_code, text.as_str()) {
             (200, _) => Ok(true),
-            (401, "") => Ok(false),
+            (401, "UNAUTHORIZED") => Ok(false),
             (401, "INVALID_TOKEN") => Err(Error::InvalidToken),
-            (409, "PERMISSION_NOT_FOUND") => Err(Error::PermissionNotFound),
-            (500, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
+            (404, "PERMISSION_NOT_FOUND") => Err(Error::PermissionNotFound),
+            (503, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
             
             _ => panic!("Invalid status and body combination, cannot parse the response")
         };

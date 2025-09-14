@@ -10,6 +10,8 @@ pub enum GroupSdkGrantPermissionError {
     PermissionNotFound,
     #[error("UNAUTHORIZED")]
     Unauthorized,
+    #[error("INVALID_TOKEN")]
+    InvalidToken,
     #[error("DATABASE_CONNECTION")]
     DatabaseConnection
 }

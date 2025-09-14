@@ -1,7 +1,7 @@
 impl crate::UserSdk {
     /// # Sdk::login
     ///
-    pub async fn register(&self, params: crate::params::UserSdkRegisterParams) -> Result<String, crate::errors::UserSdkRegisterError> {
+    pub async fn register(&self, params: crate::params::UserSdkRegisterParams) -> Result<(), crate::errors::UserSdkRegisterError> {
         use crate::errors::UserSdkRegisterError as Error;
 
         let url = reqwest::Url::options()
@@ -28,10 +28,10 @@ impl crate::UserSdk {
             .unwrap_or(String::new());
 
         return match (status_code, text.as_str()) {
-            (200, token) => Ok(token.to_string()),
+            (201, _) => Ok(()),
             (409, "ALREADY_EXIST") => Err(Error::AlreadyExist),
-            (500, "CANNOT_HASH_PASSWORD") => Err(Error::CannotHashPassword),
-            (500, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
+            (503, "CANNOT_HASH_PASSWORD") => Err(Error::CannotHashPassword),
+            (503, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
             
             _ => panic!("Invalid status and body combination, cannot parse the response")
         };

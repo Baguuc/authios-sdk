@@ -1,6 +1,7 @@
 pub mod login;
 pub mod register;
 pub mod get_info;
+pub mod list_permissions;
 pub mod authorize;
 pub mod update_pwd;
 pub mod grant_group;

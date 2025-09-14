@@ -28,10 +28,11 @@ impl crate::GroupSdk {
             .unwrap_or(String::new());
 
         return match (status_code, text.as_str()) {
-            (200, _) => Ok(()),
-            (403, "UNAUTHORIZED") => Err(Error::Unauthorized),
+            (201, _) => Ok(()),
+            (401, "UNAUTHORIZED") => Err(Error::Unauthorized),
+            (401, "INVALID_TOKEN") => Err(Error::InvalidToken),
             (409, "ALREADY_EXIST") => Err(Error::AlreadyExist),
-            (500, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
+            (503, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
             
             _ => panic!("Invalid status and body combination, cannot parse the response")
         };

@@ -6,6 +6,7 @@ pub use user_sdk::{
     UserSdkNewError,
     UserSdkAuthorizeError,
     UserSdkGetInfoError,
+    UserSdkListPermissionsError,
     UserSdkLoginError,
     UserSdkRegisterError,
     UserSdkUpdatePwdError,

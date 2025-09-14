@@ -4,6 +4,9 @@ pub use authorize::AuthorizeParams as UserSdkAuthorizeParams;
 pub mod get_info;
 pub use get_info::GetInfoParams as UserSdkGetInfoParams;
 
+pub mod list_permissions;
+pub use list_permissions::ListPermissionsParams as UserSdkListPermissionsParams;
+
 pub mod login;
 pub use login::LoginParams as UserSdkLoginParams;
 

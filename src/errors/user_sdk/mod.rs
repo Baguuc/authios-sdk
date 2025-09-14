@@ -7,6 +7,9 @@ pub use authorize::UserSdkAuthorizeError;
 pub mod get_info;
 pub use get_info::UserSdkGetInfoError;
 
+pub mod list_permissions;
+pub use list_permissions::UserSdkListPermissionsError;
+
 pub mod login;
 pub use login::UserSdkLoginError;
 

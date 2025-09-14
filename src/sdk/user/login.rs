@@ -31,10 +31,10 @@ impl crate::UserSdk {
 
         return match (status_code, text.as_str()) {
             (200, token) => Ok(token.to_string()),
-            (409, "USER_NOT_FOUND") => Err(Error::UserNotFound),
             (401, "WRONG_PASSWORD") => Err(Error::WrongPassword),
-            (500, "CANNOT_GENERATE_TOKEN") => Err(Error::CannotGenerateToken),
-            (500, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
+            (404, "USER_NOT_FOUND") => Err(Error::UserNotFound),
+            (503, "CANNOT_GENERATE_TOKEN") => Err(Error::CannotGenerateToken),
+            (503, "DATABASE_CONNECTION") => Err(Error::DatabaseConnection),
             
             _ => panic!("Invalid status and body combination, cannot parse the response")
         };
