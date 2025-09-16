@@ -24,15 +24,15 @@ impl Sdk {
         return Ok(Self { base_url });
     }
 
-    pub fn permission(self) -> PermissionSdk {
-        return PermissionSdk::new(self.base_url).unwrap();
+    pub fn permission(self: &Self) -> PermissionSdk {
+        return PermissionSdk::new(self.base_url.clone()).unwrap();
     }
     
-    pub fn group(self) -> GroupSdk {
-        return GroupSdk::new(self.base_url).unwrap();
+    pub fn group(self: &Self) -> GroupSdk {
+        return GroupSdk::new(self.base_url.clone()).unwrap();
     }
     
-    pub fn user(self) -> UserSdk {
-        return UserSdk::new(self.base_url).unwrap();
+    pub fn user(self: &Self) -> UserSdk {
+        return UserSdk::new(self.base_url.clone()).unwrap();
     }   
 }
