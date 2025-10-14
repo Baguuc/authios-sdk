@@ -1,24 +1,24 @@
-enum LoggedUserServicePermissionQuery {
-    List {
-        token: String,
-        service_id: String
-    },
+pub enum LoggedUserServicePermissionQuery {
     Check {
         token: String,
         service_id: String
     }
 }
 
+impl LoggedUserServicePermissionQuery {
+    pub fn build_query(self) -> crate::Query {
+        match self {
+            Self::Check { token, service_id } => crate::Query::LoggedUserCheckServicePermission { 
+                token,
+                service_id
+            }
+        }
+    }
+}
+
 pub struct LoggedUserServicePermissionQueryBuilder(pub String);
 
 impl LoggedUserServicePermissionQueryBuilder {
-    pub fn list(self, service_id: String) -> LoggedUserServicePermissionQuery {
-        LoggedUserServicePermissionQuery::List {
-            token: self.0,
-            service_id
-        }
-    }
-    
     pub fn check(self, service_id: String) -> LoggedUserServicePermissionQuery {
         LoggedUserServicePermissionQuery::Check {
             token: self.0,

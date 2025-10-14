@@ -9,6 +9,21 @@ pub enum ServicePermissionQuery {
     }
 }
 
+impl ServicePermissionQuery {
+    pub fn build_query(self) -> crate::Query {
+        match self {
+            Self::Create { api_key, service_id } => crate::Query::ServicePermissionCreate { 
+                api_key,
+                service_id
+            },
+            Self::Delete { api_key, service_id } => crate::Query::ServicePermissionDelete { 
+                api_key,
+                service_id
+            }
+        }
+    }
+}
+
 pub struct ServicePermissionQueryBuilder(pub String);
 
 impl ServicePermissionQueryBuilder {

@@ -6,8 +6,26 @@ pub enum LoggedUserQuery {
         new_login: Option<String>,
         new_password: Option<String>
     },
-    GetInfo { token: String },
-    Delete { token: String }
+    GetInfo {
+        token: String
+    },
+    Delete {
+        token: String
+    }
+}
+
+impl LoggedUserQuery {
+    pub fn build_query(self) -> crate::Query {
+        match self {
+            Self::Update { token, new_login, new_password } => crate::Query::LoggedUserUpdate { 
+                token,
+                new_login,
+                new_password
+            },
+            Self::GetInfo { token } => crate::Query::LoggedUserGetInfo { token },
+            Self::Delete { token } => crate::Query::LoggedUserDelete {  token }
+        }
+    }
 }
 
 pub struct LoggedUserQueryBuilder(pub String);

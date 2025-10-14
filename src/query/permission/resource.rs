@@ -13,6 +13,25 @@ pub enum ResourcePermissionQuery {
     }
 }
 
+impl ResourcePermissionQuery {
+    pub fn build_query(self) -> crate::Query {
+        match self {
+            Self::Create { api_key, service_id, resource_type, permission_name } => crate::Query::ResourcePermissionCreate { 
+                api_key,
+                service_id,
+                resource_type,
+                permission_name
+            },
+            Self::Delete { api_key, service_id, resource_type, permission_name } => crate::Query::ResourcePermissionDelete { 
+                api_key,
+                service_id,
+                resource_type,
+                permission_name
+            }
+        }
+    }
+}
+
 pub struct ResourcePermissionQueryBuilder(pub String);
 
 impl ResourcePermissionQueryBuilder {

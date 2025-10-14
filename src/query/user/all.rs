@@ -9,6 +9,21 @@ pub enum AllUserQuery {
     },
 }
 
+impl AllUserQuery {
+    pub fn build_query(self) -> crate::Query {
+        match self {
+            Self::Register { login, password } => crate::Query::AllUserRegister { 
+                login,
+                password
+            },
+            Self::Login { login, password } => crate::Query::AllUserLogin { 
+                login,
+                password
+            }
+        }
+    }
+}
+
 pub struct AllUserQueryBuilder;
 
 impl AllUserQueryBuilder {

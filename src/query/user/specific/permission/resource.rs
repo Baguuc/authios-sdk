@@ -1,4 +1,4 @@
-enum SpecificUserResourcePermissionQuery {
+pub enum SpecificUserResourcePermissionQuery {
     List {
         api_key: String,
         user_id: i32,
@@ -28,6 +28,43 @@ enum SpecificUserResourcePermissionQuery {
         resource_type: String,
         resource_id: i32,
         permission_name: String
+    }
+}
+
+impl SpecificUserResourcePermissionQuery {
+    pub fn build_query(self) -> crate::Query {
+        match self {
+            Self::List { api_key, user_id, service_id, resource_type } => crate::Query::SpecificUserListResourcePermission { 
+                api_key,
+                user_id,
+                service_id,
+                resource_type
+            },
+            Self::Check { api_key, user_id, service_id, resource_type, resource_id, permission_name } => crate::Query::SpecificUserCheckResourcePermission { 
+                api_key,
+                user_id,
+                service_id,
+                resource_type,
+                resource_id,
+                permission_name
+            },
+            Self::Grant { api_key, user_id, service_id, resource_type, resource_id, permission_name } => crate::Query::SpecificUserGrantResourcePermission { 
+                api_key,
+                user_id,
+                service_id,
+                resource_type,
+                resource_id,
+                permission_name
+            },
+            Self::Revoke { api_key, user_id, service_id, resource_type, resource_id, permission_name } => crate::Query::SpecificUserRevokeResourcePermission { 
+                api_key,
+                user_id,
+                service_id,
+                resource_type,
+                resource_id,
+                permission_name
+            }
+        }
     }
 }
 
