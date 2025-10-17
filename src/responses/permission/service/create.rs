@@ -1,13 +1,13 @@
-/// represents one of possible responses returned from deleting a resource permission (DELETE
-/// /permissions/resource)
+/// represents one of possible responses returned from creating a service permission (POST
+/// /permissions/service)
 ///
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(tag = "code", rename_all = "snake_case")]
-pub enum ResourcePermissionDeleteResponse {
+pub enum ServicePermissionCreateResponse {
     /// ok
     Ok,
-    /// permission matching provided criteria is not found
-    PermissionNotFound,
+    /// permission matching provided criteria already exists
+    AlreadyExists,
     /// the provided api key is invalid
     Unauthorized,
     /// server requested is not authios (invalid response returned)

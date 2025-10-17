@@ -1,9 +1,9 @@
-/// represents one of possible responses returned from deleting a resource permission (DELETE
-/// /permissions/resource)
+/// represents one of possible responses returned from deleting a service permission (DELETE
+/// /permissions/service)
 ///
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(tag = "code", rename_all = "snake_case")]
-pub enum ResourcePermissionDeleteResponse {
+pub enum ServicePermissionDeleteResponse {
     /// ok
     Ok,
     /// permission matching provided criteria is not found
