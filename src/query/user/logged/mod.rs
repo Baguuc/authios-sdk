@@ -1,55 +1,130 @@
 mod permission;
 
-pub enum LoggedUserQuery {
-    Update { 
-        token: String,
-        new_login: Option<String>,
-        new_password: Option<String>
-    },
-    GetInfo {
-        token: String
-    },
-    Delete {
-        token: String
-    }
+pub struct LoggedUserQueryBuilder {
+    pub base_url: reqwest::Url,
+    pub token: String
 }
-
-impl LoggedUserQuery {
-    pub fn build_query(self) -> crate::Query {
-        match self {
-            Self::Update { token, new_login, new_password } => crate::Query::LoggedUserUpdate { 
-                token,
-                new_login,
-                new_password
-            },
-            Self::GetInfo { token } => crate::Query::LoggedUserGetInfo { token },
-            Self::Delete { token } => crate::Query::LoggedUserDelete {  token }
-        }
-    }
-}
-
-pub struct LoggedUserQueryBuilder(pub String);
 
 impl LoggedUserQueryBuilder {
-    pub fn permissions(self) -> permission::LoggedUserPermissionQueryBuilder { permission::LoggedUserPermissionQueryBuilder(self.0) }
+    pub fn permissions(self) -> permission::LoggedUserPermissionQueryBuilder {
+        permission::LoggedUserPermissionQueryBuilder { base_url: self.base_url, token: self.token }
+    }
     
-    pub fn update(self, new_login: Option<String>, new_password: Option<String>) -> LoggedUserQuery { 
-        LoggedUserQuery::Update {
-            token: self.0,
-            new_login,
-            new_password
+    pub async fn update(self, params: crate::requests::LoggedUserUpdateRequest) -> crate::responses::LoggedUserUpdateResponse {
+        use crate::responses::LoggedUserUpdateResponse as Response;
+
+        let url = reqwest::Url::options()
+            .base_url(Some(&self.base_url))
+            .parse("users/me")
+            // won't error
+            .unwrap();
+
+        let client = reqwest::Client::new();
+        let result = client
+            .patch(url)
+            .header("authorization", format!("Bearer {}", self.token))
+            .json(&params)
+            .send()
+            .await;
+
+        let http_response = match result {
+            Ok(http_response) => http_response,
+            Err(_) => return Response::ServerUnavailable
+        };
+
+        let deserialized = http_response
+            .json()
+            .await;
+
+        match deserialized {
+            Ok(r) => r,
+            // when the response is invalid we know that the fetched route is not authios
+            Err(_) => Response::ServerNotAuthios
         }
     }
     
-    pub fn delete(self) -> LoggedUserQuery { 
-        LoggedUserQuery::Delete {
-            token: self.0
+    pub async fn delete(self) -> crate::responses::LoggedUserDeleteResponse {
+        use crate::responses::LoggedUserDeleteResponse as Response;
+
+        let url = reqwest::Url::options()
+            .base_url(Some(&self.base_url))
+            .parse("users/me")
+            // won't error
+            .unwrap();
+
+        let client = reqwest::Client::new();
+        let result = client
+            .delete(url)
+            .header("authorization", format!("Bearer {}", self.token))
+            .send()
+            .await;
+
+        let http_response = match result {
+            Ok(http_response) => http_response,
+            Err(_) => return Response::ServerUnavailable
+        };
+
+        let deserialized = http_response
+            .json()
+            .await;
+
+        match deserialized {
+            Ok(r) => r,
+            // when the response is invalid we know that the fetched route is not authios
+            Err(_) => Response::ServerNotAuthios
         }
     }
     
-    pub fn get_info(self) -> LoggedUserQuery { 
-        LoggedUserQuery::GetInfo {
-            token: self.0
+    pub async fn get_info(self, params: crate::requests::LoggedUserGetInfoRequest) -> crate::responses::LoggedUserGetInfoResponse {
+        use crate::responses::LoggedUserGetInfoResponse as Response;
+
+        let mut url_query = String::new();
+        
+        if let Some(get_id) = params.get_id {
+            let prefix = if url_query.len() > 0 { "&" } else { "?" };
+
+            url_query.push_str(format!("{}get_id={}", prefix, get_id).as_str());
+        }
+        
+        if let Some(get_login) = params.get_login {
+            let prefix = if url_query.len() > 0 { "&" } else { "?" };
+
+            url_query.push_str(format!("{}get_login={}", prefix, get_login).as_str());
+        }
+        
+        if let Some(get_password_hash) = params.get_password_hash {
+            let prefix = if url_query.len() > 0 { "&" } else { "?" };
+
+            url_query.push_str(format!("{}get_password_hash={}", prefix, get_password_hash).as_str());
+        }
+
+        let url = format!("users/me{}", url_query);
+        let url = reqwest::Url::options()
+            .base_url(Some(&self.base_url))
+            .parse(url.as_str())
+            // won't error
+            .unwrap();
+
+        let client = reqwest::Client::new();
+        let result = client
+            .get(url)
+            .header("authorization", format!("Bearer {}", self.token))
+            .send()
+            .await;
+
+        let http_response = match result {
+            Ok(http_response) => http_response,
+            Err(_) => return Response::ServerUnavailable
+        };
+
+        let deserialized = http_response
+            .json()
+            .await;
+
+        match deserialized {
+            Ok(r) => r,
+            // when the response is invalid we know that the fetched route is not authios
+            Err(_) => Response::ServerNotAuthios
         }
     }
 }

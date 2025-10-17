@@ -1,33 +1,73 @@
-pub enum AllUserQuery {
-    Register {
-        login: String,
-        password: String
-    },
-    Login {
-        login: String,
-        password: String
-    },
+pub struct AllUserQueryBuilder {
+    pub base_url: reqwest::Url
 }
-
-impl AllUserQuery {
-    pub fn build_query(self) -> crate::Query {
-        match self {
-            Self::Register { login, password } => crate::Query::AllUserRegister { 
-                login,
-                password
-            },
-            Self::Login { login, password } => crate::Query::AllUserLogin { 
-                login,
-                password
-            }
-        }
-    }
-}
-
-pub struct AllUserQueryBuilder;
 
 impl AllUserQueryBuilder {
-    pub fn register(self, login: String, password: String) -> AllUserQuery { AllUserQuery::Register { login, password } }
-    
-    pub fn login(self, login: String, password: String) -> AllUserQuery { AllUserQuery::Login { login, password } }
+    /// log in as a user and get the session token using POST /users/me route.
+    /// 
+    pub async fn login(self: &Self, params: crate::requests::AllUserLoginRequest) -> crate::responses::AllUserLoginResponse {
+        use crate::responses::AllUserLoginResponse as Response;
+
+        let url = reqwest::Url::options()
+            .base_url(Some(&self.base_url))
+            .parse("users/me")
+            // won't error
+            .unwrap();
+
+        let client = reqwest::Client::new();
+        let result = client
+            .post(url)
+            .json(&params)
+            .send()
+            .await;
+
+        let http_response = match result {
+            Ok(http_response) => http_response,
+            Err(_) => return Response::ServerUnavailable
+        };
+
+        let deserialized = http_response
+            .json()
+            .await;
+
+        match deserialized {
+            Ok(r) => r,
+            // when the response is invalid we know that the fetched route is not authios
+            Err(_) => Response::ServerNotAuthios
+        }
+    }
+
+    /// register a user using POST /users route.
+    /// 
+    pub async fn register(self: &Self, params: crate::requests::AllUserRegisterRequest) -> crate::responses::AllUserRegisterResponse {
+        use crate::responses::AllUserRegisterResponse as Response;
+
+        let url = reqwest::Url::options()
+            .base_url(Some(&self.base_url))
+            .parse("users")
+            // won't error
+            .unwrap();
+
+        let client = reqwest::Client::new();
+        let result = client
+            .post(url)
+            .json(&params)
+            .send()
+            .await;
+
+        let http_response = match result {
+            Ok(http_response) => http_response,
+            Err(_) => return Response::ServerUnavailable
+        };
+
+        let deserialized = http_response
+            .json()
+            .await;
+
+        match deserialized {
+            Ok(r) => r,
+            // when the response is invalid we know that the fetched route is not authios
+            Err(_) => Response::ServerNotAuthios
+        }
+    }
 }

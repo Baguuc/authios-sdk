@@ -1,28 +1,38 @@
-pub enum LoggedUserServicePermissionQuery {
-    Check {
-        token: String,
-        service_id: String
-    }
+pub struct LoggedUserServicePermissionQueryBuilder {
+    pub base_url: reqwest::Url,
+    pub token: String
 }
-
-impl LoggedUserServicePermissionQuery {
-    pub fn build_query(self) -> crate::Query {
-        match self {
-            Self::Check { token, service_id } => crate::Query::LoggedUserCheckServicePermission { 
-                token,
-                service_id
-            }
-        }
-    }
-}
-
-pub struct LoggedUserServicePermissionQueryBuilder(pub String);
 
 impl LoggedUserServicePermissionQueryBuilder {
-    pub fn check(self, service_id: String) -> LoggedUserServicePermissionQuery {
-        LoggedUserServicePermissionQuery::Check {
-            token: self.0,
-            service_id
+    pub async fn check(self, params: crate::requests::LoggedUserCheckServicePermissionRequest) -> crate::responses::LoggedUserCheckServicePermissionResponse {
+        use crate::responses::LoggedUserCheckServicePermissionResponse as Response;
+
+        let url = reqwest::Url::options()
+            .base_url(Some(&self.base_url))
+            .parse(format!("/users/me/permissions/service/{}", params.service_id).as_str())
+            // won't error
+            .unwrap();
+
+        let client = reqwest::Client::new();
+        let result = client
+            .get(url)
+            .header("authorization", format!("Bearer {}", self.token))
+            .send()
+            .await;
+
+        let http_response = match result {
+            Ok(http_response) => http_response,
+            Err(_) => return Response::ServerUnavailable
+        };
+
+        let deserialized = http_response
+            .json()
+            .await;
+
+        match deserialized {
+            Ok(r) => r,
+            // when the response is invalid we know that the fetched route is not authios
+            Err(_) => Response::ServerNotAuthios
         }
     }
 }
