@@ -12,5 +12,10 @@ impl QueryBuilder {
 
     pub fn user(self) -> user::UserQueryBuilder { user::UserQueryBuilder { base_url: self.base_url } }
 
-    pub fn permission(self, api_key: String) -> permission::PermissionQueryBuilder { permission::PermissionQueryBuilder(api_key) }
+    pub fn permission(self, api_key: String) -> permission::PermissionQueryBuilder {
+        permission::PermissionQueryBuilder {
+            base_url: self.base_url,
+            api_key
+        }
+    }
 }
