@@ -9,5 +9,8 @@ impl Client {
         
         return Some(Self { base_url });
     }
-
+    
+    pub fn query(self) -> crate::query::QueryBuilder {
+        crate::query::QueryBuilder::new(self.base_url)
+    }
 }
