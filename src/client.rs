@@ -1,3 +1,4 @@
+#[derive(Clone, Debug)]
 pub struct Client {
     base_url: reqwest::Url
 }
