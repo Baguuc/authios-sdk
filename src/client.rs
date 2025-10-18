@@ -11,7 +11,7 @@ impl Client {
         return Some(Self { base_url });
     }
     
-    pub fn query(self) -> crate::query::QueryBuilder {
-        crate::query::QueryBuilder::new(self.base_url)
+    pub fn query(self: &Self) -> crate::query::QueryBuilder {
+        crate::query::QueryBuilder::new(self.clone().base_url)
     }
 }
