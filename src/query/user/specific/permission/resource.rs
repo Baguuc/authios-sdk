@@ -114,8 +114,8 @@ impl SpecificUserResourcePermissionQueryBuilder {
         }
     }
     
-    pub async fn grant(self, params: crate::requests::SpecificUserGrantResourcePermissionRequest) -> crate::responses::SpecificUserCheckResourcePermissionResponse {
-        use crate::responses::SpecificUserCheckResourcePermissionResponse as Response;
+    pub async fn grant(self, params: crate::requests::SpecificUserGrantResourcePermissionRequest) -> crate::responses::SpecificUserGrantResourcePermissionResponse {
+        use crate::responses::SpecificUserGrantResourcePermissionResponse as Response;
 
         let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
