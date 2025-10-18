@@ -17,9 +17,9 @@ pub enum LoggedUserListResourcePermissionsResponse {
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct ListData {
-    page_number: Option<u32>,
-    total_page_count: Option<u32>,
-    permissions: Vec<UserPermissionData>
+    pub page_number: Option<u32>,
+    pub total_page_count: Option<u32>,
+    pub permissions: Vec<UserPermissionData>
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
