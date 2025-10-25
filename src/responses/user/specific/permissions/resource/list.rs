@@ -5,7 +5,7 @@
 pub enum SpecificUserListResourcePermissionsResponse {
     /// ok, permissions returned
     Ok {
-        list: ListData
+        page: PageData
     },
     /// the user with specified id is not found
     UserNotFound,
@@ -18,10 +18,9 @@ pub enum SpecificUserListResourcePermissionsResponse {
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
-pub struct ListData {
+pub struct PageData {
     pub page_number: Option<u32>,
-    pub total_page_count: Option<u32>,
-    pub permissions: Vec<UserPermissionData>
+    pub permissions: Option<Vec<UserPermissionData>>
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]

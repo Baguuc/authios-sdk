@@ -78,27 +78,14 @@ impl LoggedUserQueryBuilder {
     pub async fn get_info(self, params: crate::requests::LoggedUserGetInfoRequest) -> crate::responses::LoggedUserGetInfoResponse {
         use crate::responses::LoggedUserGetInfoResponse as Response;
 
-        let mut url_query = String::new();
+        let query = format!(
+            "?get_id={}&get_login={}&get_password_hash={}",
+            params.get_id,
+            params.get_login,
+            params.get_password_hash
+        );
         
-        if let Some(get_id) = params.get_id {
-            let prefix = if url_query.len() > 0 { "&" } else { "?" };
-
-            url_query.push_str(format!("{}get_id={}", prefix, get_id).as_str());
-        }
-        
-        if let Some(get_login) = params.get_login {
-            let prefix = if url_query.len() > 0 { "&" } else { "?" };
-
-            url_query.push_str(format!("{}get_login={}", prefix, get_login).as_str());
-        }
-        
-        if let Some(get_password_hash) = params.get_password_hash {
-            let prefix = if url_query.len() > 0 { "&" } else { "?" };
-
-            url_query.push_str(format!("{}get_password_hash={}", prefix, get_password_hash).as_str());
-        }
-
-        let url = format!("users/me{}", url_query);
+        let url = format!("users/me{}", query);
         let url = reqwest::Url::options()
             .base_url(Some(&self.base_url))
             .parse(url.as_str())
