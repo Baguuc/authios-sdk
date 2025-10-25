@@ -27,6 +27,6 @@ pub struct PageData {
 pub struct UserPermissionData {
     pub service_id: Option<String>,
     pub resource_type: Option<String>,
-    pub resource_id: Option<i32>,
+    pub resource_id: Option<String>,
     pub permissions: Option<Vec<String>>,
 }
