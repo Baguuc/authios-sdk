@@ -6,7 +6,6 @@ pub struct LoggedUserListResourcePermissionsRequest {
     pub page_number: u32,
     // partial fetching values
     pub get_page_number: bool,
-    pub get_total_page_count: bool,
     pub get_service_id: bool,
     pub get_resource_type: bool,
     pub get_resource_id: bool,
