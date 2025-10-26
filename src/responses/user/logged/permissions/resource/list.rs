@@ -5,7 +5,7 @@
 pub enum LoggedUserListResourcePermissionsResponse {
     /// ok, permissions returned
     Ok {
-        list: PageData
+        page: PageData
     },
     /// token sent is invalid - in wrong format or pointing to a user that doesn't exist
     InvalidToken,
